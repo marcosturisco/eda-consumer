@@ -1,0 +1,32 @@
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
+    tags-sorter: alpha
+    operations-sorter: alpha
+    tryItOutEnabled: true
+    validatorUrl: null
+
+spring:
+  kafka:
+#    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:29092
+    consumer:
+      group-id: wallet
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    org:
+      springframework: INFO
+      springframework.security: INFO

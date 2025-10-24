@@ -1,0 +1,5 @@
+.idea
+.database
+.dockerignore
+.gitignore
+pom.xml
