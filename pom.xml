@@ -26,6 +26,7 @@
 
         <!-- Dependências versões principais -->
         <spring-boot.version>3.4.4</spring-boot.version>
+        <javax-ws.version>2.1.1</javax-ws.version>
         <org.lombok.version>1.18.42</org.lombok.version>
         <commons.io.version>2.15.1</commons.io.version>
         <org.slf4j.version>2.0.17</org.slf4j.version>
@@ -82,6 +83,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${org.slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>${javax-ws.version}</version>
         </dependency>
 
         <!-- DATABASES -->

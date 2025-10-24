@@ -3,11 +3,11 @@ package br.com.fullcycle.service;
 import br.com.fullcycle.dto.TransactionDTO;
 import br.com.fullcycle.entity.Balance;
 import br.com.fullcycle.repository.BalanceRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -27,6 +27,11 @@ public class BalanceService {
         updateOrCreateBalance(dto.getPayload().getAccountIdFrom(), transactionAmount, false);
         updateOrCreateBalance(dto.getPayload().getAccountIdTo(), transactionAmount, true);
 
+    }
+
+    @Transactional(readOnly = true)
+    public Balance findByAccountId(String accountId) {
+        return balanceRepository.findByAccountId(accountId);
     }
 
     private void updateOrCreateBalance(String accountId, BigDecimal amount, boolean isCredit) {
