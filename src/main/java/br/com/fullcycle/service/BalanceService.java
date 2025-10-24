@@ -23,41 +23,34 @@ public class BalanceService {
     @Transactional
     public void updateBalance(TransactionDTO dto) {
         logger.info("Transaction {}", dto);
+        BigDecimal transactionAmount = BigDecimal.valueOf(dto.getPayload().getAmount());
+        updateOrCreateBalance(dto.getPayload().getAccountIdFrom(), transactionAmount, false);
+        updateOrCreateBalance(dto.getPayload().getAccountIdTo(), transactionAmount, true);
 
-        var fromId = dto.getPayload().getAccountIdFrom();
-        Balance balanceFrom = balanceRepository.findById(fromId)
-                .orElseGet(() -> {
-                            String id = UUID.randomUUID().toString();
-                            return balanceRepository.save(
-                                    Balance.builder()
-                                            .id(id)
-                                            .accountId(fromId)
-                                            .balanceAccount(BigDecimal.valueOf(dto.getPayload().getAmount()))
-                                            .build());
-                        }
-                );
+    }
 
-        var toId = dto.getPayload().getAccountIdTo();
-        Balance balanceTo = balanceRepository.findById(toId)
-                .orElseGet(() -> {
-                            String id = UUID.randomUUID().toString();
-                            return balanceRepository.save(
-                                    Balance.builder()
-                                            .id(id)
-                                            .accountId(toId)
-                                            .balanceAccount(BigDecimal.valueOf(dto.getPayload().getAmount()))
-                                            .build());
-                        }
-                );
-
-        BigDecimal updateFromAccount = balanceFrom.getBalanceAccount()
-                .subtract(BigDecimal.valueOf(dto.getPayload().getAmount()));
-        balanceFrom.setBalanceAccount(updateFromAccount);
-        BigDecimal updateToAccount = balanceTo.getBalanceAccount()
-                .subtract(BigDecimal.valueOf(dto.getPayload().getAmount()));
-        balanceTo.setBalanceAccount(updateToAccount);
-
-        balanceRepository.save(balanceFrom);
-        balanceRepository.save(balanceTo);
+    private void updateOrCreateBalance(String accountId, BigDecimal amount, boolean isCredit) {
+        logger.info("Account {}", accountId);
+        logger.info("Amount {}", amount);
+        logger.info("Credit ? {}", isCredit);
+        Balance balance = balanceRepository.findByAccountId(accountId);
+        if (balance != null) {
+            BigDecimal updatedBalance = isCredit
+                    ? balance.getBalanceAccount().add(amount)
+                    : balance.getBalanceAccount().subtract(amount);
+            balance.setBalanceAccount(updatedBalance);
+            logger.info("Updating a Balance {}", balance);
+            balanceRepository.save(balance);
+        } else {
+            BigDecimal initialBalance = isCredit ? amount : amount.negate();
+            logger.info("Creating a New Balance {}", initialBalance);
+            balanceRepository.save(
+                    Balance.builder()
+                            .id(UUID.randomUUID().toString())
+                            .accountId(accountId)
+                            .balanceAccount(initialBalance)
+                            .build()
+            );
+        }
     }
 }
