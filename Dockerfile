@@ -10,7 +10,4 @@ WORKDIR /app
 
 COPY --from=builder /app/app.jar .
 
-RUN apk add --no-cache curl && \
-    apk add --no-cache ttf-dejavu fontconfig
-
 ENTRYPOINT ["java", "-jar", "app.jar"]
