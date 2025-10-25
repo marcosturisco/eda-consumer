@@ -17,7 +17,7 @@ public class BalanceRestController {
     private final BalanceService balanceService;
 
     @GetMapping("/{account_id}")
-    public ResponseEntity<Balance> exposeAccountBalance(@PathVariable("account_id") String accountId) {
+    public ResponseEntity<Balance> exposeBalance(@PathVariable("account_id") String accountId) {
         var balance = balanceService.findByAccountId(accountId);
         if (balance != null) {
             return ResponseEntity.ok(balance);

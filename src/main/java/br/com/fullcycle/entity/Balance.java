@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -32,5 +33,8 @@ public class Balance {
 
     @Column(name = "balance_account_id_to")
     private BigDecimal balanceAccountIdTo;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
 }

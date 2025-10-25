@@ -25,32 +25,21 @@ public class BalanceService {
         logger.info("Balances {}", dto);
         BigDecimal balanceFromAccount = BigDecimal.valueOf(dto.getPayload().getBalanceAccountIdFrom());
         BigDecimal balanceToAccount = BigDecimal.valueOf(dto.getPayload().getBalanceAccountIdTo());
-        updateBalance(dto.getPayload().getAccountIdFrom(), balanceFromAccount);
-        updateBalance(dto.getPayload().getAccountIdTo(), balanceToAccount);
+        logger.info("Creating a New From Balance {}", balanceFromAccount);
+        logger.info("Creating a New To Balance {}", balanceToAccount);
+        balanceRepository.save(
+                Balance.builder()
+                        .id(UUID.randomUUID().toString())
+                        .accountIdFrom(dto.getPayload().getAccountIdFrom())
+                        .accountIdTo(dto.getPayload().getAccountIdTo())
+                        .balanceAccountIdFrom(balanceFromAccount)
+                        .balanceAccountIdTo(balanceToAccount)
+                        .build()
+        );
     }
 
     @Transactional(readOnly = true)
     public Balance findByAccountId(String accountId) {
-        return balanceRepository.findByAccountId(accountId);
-    }
-
-    private void updateBalance(String accountId, BigDecimal amount) {
-        logger.info("Account {}", accountId);
-        logger.info("Balance {}", amount);
-        Balance balance = balanceRepository.findByAccountId(accountId);
-        if (balance != null) {
-            balance.setBalanceAccountIdFrom(amount);
-            logger.info("Updating a Balance {}", balance);
-            balanceRepository.save(balance);
-        } else {
-            logger.info("Creating a New Balance {}", amount);
-            balanceRepository.save(
-                    Balance.builder()
-                            .id(UUID.randomUUID().toString())
-                            .accountIdFrom(accountId)
-                            .balanceAccountIdFrom(amount)
-                            .build()
-            );
-        }
+        return balanceRepository.findTopByAccountIdFromOrAccountIdToOrderByCreatedAtDesc(accountId, accountId);
     }
 }
