@@ -21,10 +21,16 @@ public class Balance {
     @Column(length = 36)
     private String id;
 
-    @Column(name = "account_id")
-    private String accountId;
+    @Column(name = "account_id_from")
+    private String accountIdFrom;
 
-    @Column(name = "balance")
-    private BigDecimal balanceAccount;
+    @Column(name = "account_id_to")
+    private String accountIdTo;
+
+    @Column(name = "balance_account_id_from")
+    private BigDecimal balanceAccountIdFrom;
+
+    @Column(name = "balance_account_id_to")
+    private BigDecimal balanceAccountIdTo;
 
 }

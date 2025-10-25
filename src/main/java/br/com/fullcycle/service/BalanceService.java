@@ -39,7 +39,7 @@ public class BalanceService {
         logger.info("Balance {}", amount);
         Balance balance = balanceRepository.findByAccountId(accountId);
         if (balance != null) {
-            balance.setBalanceAccount(amount);
+            balance.setBalanceAccountIdFrom(amount);
             logger.info("Updating a Balance {}", balance);
             balanceRepository.save(balance);
         } else {
@@ -47,8 +47,8 @@ public class BalanceService {
             balanceRepository.save(
                     Balance.builder()
                             .id(UUID.randomUUID().toString())
-                            .accountId(accountId)
-                            .balanceAccount(amount)
+                            .accountIdFrom(accountId)
+                            .balanceAccountIdFrom(amount)
                             .build()
             );
         }
