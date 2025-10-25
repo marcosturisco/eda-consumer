@@ -1,6 +1,6 @@
 package br.com.fullcycle.rest;
 
-import br.com.fullcycle.entity.Balance;
+import br.com.fullcycle.dto.BalanceOutputDto;
 import br.com.fullcycle.service.BalanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ public class BalanceRestController {
     private final BalanceService balanceService;
 
     @GetMapping("/{account_id}")
-    public ResponseEntity<Balance> exposeBalance(@PathVariable("account_id") String accountId) {
+    public ResponseEntity<BalanceOutputDto> exposeBalance(@PathVariable("account_id") String accountId) {
         var balance = balanceService.findByAccountId(accountId);
         if (balance != null) {
             return ResponseEntity.ok(balance);

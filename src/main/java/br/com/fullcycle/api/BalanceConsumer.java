@@ -1,6 +1,6 @@
 package br.com.fullcycle.api;
 
-import br.com.fullcycle.dto.BalanceDTO;
+import br.com.fullcycle.dto.BalanceInputDto;
 import br.com.fullcycle.service.BalanceService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +27,7 @@ public class BalanceConsumer {
             int jsonStart = message.indexOf("{");
             String jsonString = message.substring(jsonStart);
             ObjectMapper mapper = new ObjectMapper();
-            BalanceDTO dto = mapper.readValue(jsonString, BalanceDTO.class);
+            BalanceInputDto dto = mapper.readValue(jsonString, BalanceInputDto.class);
             logger.info("Balances Converted {}", dto);
             balanceService.updateBalances(dto);
         } catch (JsonProcessingException e) {
