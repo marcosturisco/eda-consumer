@@ -1,6 +1,6 @@
 package br.com.fullcycle.service;
 
-import br.com.fullcycle.dto.TransactionDTO;
+import br.com.fullcycle.dto.BalanceDTO;
 import br.com.fullcycle.entity.Balance;
 import br.com.fullcycle.repository.BalanceRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +21,12 @@ public class BalanceService {
     private final BalanceRepository balanceRepository;
 
     @Transactional
-    public void updateBalance(TransactionDTO dto) {
-        logger.info("Transaction {}", dto);
-        BigDecimal transactionAmount = BigDecimal.valueOf(dto.getPayload().getAmount());
-        updateOrCreateBalance(dto.getPayload().getAccountIdFrom(), transactionAmount, false);
-        updateOrCreateBalance(dto.getPayload().getAccountIdTo(), transactionAmount, true);
-
+    public void updateBalances(BalanceDTO dto) {
+        logger.info("Balances {}", dto);
+        BigDecimal balanceFromAccount = BigDecimal.valueOf(dto.getPayload().getBalanceAccountIdFrom());
+        BigDecimal balanceToAccount = BigDecimal.valueOf(dto.getPayload().getBalanceAccountIdTo());
+        updateBalance(dto.getPayload().getAccountIdFrom(), balanceFromAccount);
+        updateBalance(dto.getPayload().getAccountIdTo(), balanceToAccount);
     }
 
     @Transactional(readOnly = true)
@@ -34,26 +34,21 @@ public class BalanceService {
         return balanceRepository.findByAccountId(accountId);
     }
 
-    private void updateOrCreateBalance(String accountId, BigDecimal amount, boolean isCredit) {
+    private void updateBalance(String accountId, BigDecimal amount) {
         logger.info("Account {}", accountId);
-        logger.info("Amount {}", amount);
-        logger.info("Credit ? {}", isCredit);
+        logger.info("Balance {}", amount);
         Balance balance = balanceRepository.findByAccountId(accountId);
         if (balance != null) {
-            BigDecimal updatedBalance = isCredit
-                    ? balance.getBalanceAccount().add(amount)
-                    : balance.getBalanceAccount().subtract(amount);
-            balance.setBalanceAccount(updatedBalance);
+            balance.setBalanceAccount(amount);
             logger.info("Updating a Balance {}", balance);
             balanceRepository.save(balance);
         } else {
-            BigDecimal initialBalance = isCredit ? amount : amount.negate();
-            logger.info("Creating a New Balance {}", initialBalance);
+            logger.info("Creating a New Balance {}", amount);
             balanceRepository.save(
                     Balance.builder()
                             .id(UUID.randomUUID().toString())
                             .accountId(accountId)
-                            .balanceAccount(initialBalance)
+                            .balanceAccount(amount)
                             .build()
             );
         }

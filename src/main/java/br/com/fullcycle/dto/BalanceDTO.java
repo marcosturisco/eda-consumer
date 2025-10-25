@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionDTO {
+public class BalanceDTO {
 
     @JsonProperty("Name")
     private String name;

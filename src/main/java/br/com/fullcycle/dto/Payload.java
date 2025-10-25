@@ -12,13 +12,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Payload {
 
-    @JsonProperty("id")
-    private String id;
     @JsonProperty("account_id_from")
     private String accountIdFrom;
     @JsonProperty("account_id_to")
     private String accountIdTo;
-    @JsonProperty("amount")
-    private Integer amount;
+    @JsonProperty("balance_account_id_from")
+    private Integer balanceAccountIdFrom;
+    @JsonProperty("balance_account_id_to")
+    private Integer balanceAccountIdTo;
 
 }

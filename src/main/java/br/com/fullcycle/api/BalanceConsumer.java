@@ -1,6 +1,6 @@
 package br.com.fullcycle.api;
 
-import br.com.fullcycle.dto.TransactionDTO;
+import br.com.fullcycle.dto.BalanceDTO;
 import br.com.fullcycle.service.BalanceService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,24 +12,24 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@KafkaListener(topics = "transactions", groupId = "wallet")
+@KafkaListener(topics = "balances", groupId = "wallet")
 @RequiredArgsConstructor
-public class TransactionConsumer {
+public class BalanceConsumer {
 
-    private static final Logger logger = LoggerFactory.getLogger(TransactionConsumer.class);
+    private static final Logger logger = LoggerFactory.getLogger(BalanceConsumer.class);
 
     private final BalanceService balanceService;
 
     @KafkaHandler
-    public void getTransaction(String message) {
+    public void updateBalances(String message) {
         try {
-            logger.info("Transaction {}", message);
+            logger.info("Balances {}", message);
             int jsonStart = message.indexOf("{");
             String jsonString = message.substring(jsonStart);
             ObjectMapper mapper = new ObjectMapper();
-            TransactionDTO dto = mapper.readValue(jsonString, TransactionDTO.class);
-            logger.info("Transaction Converted {}", dto);
-            balanceService.updateBalance(dto);
+            BalanceDTO dto = mapper.readValue(jsonString, BalanceDTO.class);
+            logger.info("Balances Converted {}", dto);
+            balanceService.updateBalances(dto);
         } catch (JsonProcessingException e) {
             logger.error("Could not parse a message to dto");
         }
